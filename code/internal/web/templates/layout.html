@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{block "title" .}}GitHub to Resume{{end}}</title>
+  <meta name="description" content="Generate a professional developer resume from your public GitHub profile.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="{{block "bodyclass" .}}{{end}}">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header no-print">
+    <a class="brand" href="/">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.5H8zm0 3.5h8V17H8zm0-7h4V10H8z"/></svg>
+      <span>GitHub&nbsp;to&nbsp;Resume</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="/editor">Editor</a>
+    </nav>
+  </header>
+  <main id="main">
+    {{block "content" .}}{{end}}
+  </main>
+  <footer class="site-footer no-print">
+    <p>Uses public GitHub data only. Resumes stay in your browser; the server does not store them.</p>
+  </footer>
+  {{block "scripts" .}}{{end}}
+</body>
+</html>

@@ -226,7 +226,7 @@ func Sanitize(r *Resume) error {
 	r.MissingInfo = cleanList(r.MissingInfo, maxLine, maxList)
 
 	if r.Name == "" {
-		return errors.New("the resume needs a name")
+		return errors.New("The resume needs a name.")
 	}
 	return nil
 }

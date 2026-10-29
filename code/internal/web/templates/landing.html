@@ -1,0 +1,53 @@
+{{define "content"}}
+<section class="hero">
+  <div class="hero-text">
+    <h1>Turn your GitHub into a resume that tells the truth.</h1>
+    <p class="lead">Enter a GitHub username. We read your public repositories, pick out the projects that show your skills, and
+      {{if .AIEnabled}}use Claude to draft{{else}}build{{end}} a clean, recruiter-friendly resume you can edit and download as a PDF.</p>
+
+    <form class="username-form" action="/analyze" method="get" data-loading="Fetching profile and repositories…">
+      <label for="username">GitHub username or profile URL</label>
+      <div class="input-row">
+        <input id="username" name="username" type="text" required maxlength="200" autocomplete="off"
+               autocapitalize="off" spellcheck="false" placeholder="octocat or https://github.com/octocat"
+               value="{{.Username}}" {{if .Error}}aria-invalid="true" aria-describedby="username-error"{{end}}>
+        <button type="submit" class="btn btn-primary">Generate resume</button>
+      </div>
+      {{if .Error}}<p id="username-error" class="form-error" role="alert">{{.Error}}</p>{{end}}
+    </form>
+    {{if not .AIEnabled}}
+    <p class="notice">AI generation is off because <code>ANTHROPIC_API_KEY</code> is not set. You'll get a draft built only from GitHub facts, which you can finish in the editor.</p>
+    {{end}}
+  </div>
+</section>
+
+<section class="how" aria-labelledby="how-title">
+  <h2 id="how-title">How it works</h2>
+  <ol class="steps">
+    <li><strong>Analyze.</strong> We fetch your public profile and repositories from the GitHub API. No sign-in needed.</li>
+    <li><strong>Choose.</strong> Pick the projects that best represent you, and add details GitHub can't show, like contact info, experience and a target job.</li>
+    <li><strong>Generate.</strong> The AI writes a headline, summary, skills and project bullets using only evidence from your repositories. Anything it infers is clearly labelled.</li>
+    <li><strong>Edit &amp; export.</strong> Edit every section, pick a template and download a print-ready PDF.</li>
+  </ol>
+  <p class="fine-print">The AI never invents employers, degrees, certifications or metrics. Stars and commit counts are not treated as proof of skill.</p>
+</section>
+
+<section class="sample" aria-labelledby="sample-title">
+  <h2 id="sample-title">Sample resume</h2>
+  <div class="sample-frame">
+    <div id="sample-preview" class="resume tpl-modern" data-resume="{{.SampleJSON}}" aria-label="Sample resume preview"></div>
+  </div>
+</section>
+
+<div id="loading" class="loading-overlay" hidden>
+  <div class="loading-box" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <p id="loading-text">Working…</p>
+  </div>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script src="/static/render.js"></script>
+<script src="/static/app.js"></script>
+{{end}}

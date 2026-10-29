@@ -1,0 +1,88 @@
+{{define "title"}}{{.Username}} · GitHub to Resume{{end}}
+{{define "content"}}
+{{$u := .Analysis.User}}
+<section class="profile-card">
+  {{if $u.AvatarURL}}<img class="avatar" src="{{$u.AvatarURL}}" alt="" width="88" height="88">{{end}}
+  <div>
+    <h1>{{if $u.Name}}{{$u.Name}}{{else}}{{$u.Login}}{{end}}</h1>
+    <p class="muted"><a href="{{$u.HTMLURL}}" rel="noopener noreferrer" target="_blank">@{{$u.Login}}</a>
+      {{if $u.Location}} · {{$u.Location}}{{end}} · {{$u.PublicRepos}} public repositories</p>
+    {{if $u.Bio}}<p>{{$u.Bio}}</p>{{end}}
+  </div>
+</section>
+
+<form action="/generate" method="post" class="analyze-form"
+      data-loading="{{if .AIEnabled}}Reading READMEs and writing your resume with Claude. This usually takes 30 to 90 seconds…{{else}}Building your draft…{{end}}">
+  <input type="hidden" name="username" value="{{$u.Login}}">
+
+  <section aria-labelledby="repos-title">
+    <div class="section-head">
+      <h2 id="repos-title">Choose repositories</h2>
+      <p class="muted">We pre-selected the most recent, documented projects. Select up to <strong>{{.MaxSelected}}</strong>.
+        <span id="selected-count" aria-live="polite"></span></p>
+    </div>
+
+    {{if not .Analysis.Repos}}
+      <p class="notice">This profile has no public repositories. A resume needs at least one project, so try another username or publish a project first.</p>
+    {{else}}
+    <ul class="repo-list" data-max="{{.MaxSelected}}">
+      {{range .Analysis.Repos}}{{$r := .Repo}}
+      <li class="repo{{if $r.Fork}} is-fork{{end}}">
+        <label>
+          <input type="checkbox" name="repos" value="{{$r.Name}}" {{if .Selected}}checked{{end}}>
+          <span class="repo-body">
+            <span class="repo-name">{{$r.Name}}
+              {{if $r.Fork}}<span class="badge">fork</span>{{end}}
+              {{if $r.Archived}}<span class="badge">archived</span>{{end}}
+            </span>
+            {{if $r.Description}}<span class="repo-desc">{{$r.Description}}</span>{{else}}<span class="repo-desc muted">No description</span>{{end}}
+            <span class="repo-meta">
+              {{if $r.Language}}<span>{{$r.Language}}</span>{{end}}
+              <span title="Stars">★ {{$r.Stars}}</span>
+              <span title="Forks">⑂ {{$r.Forks}}</span>
+              <span>Updated {{$r.PushedAt.Format "Jan 2006"}}</span>
+              {{range $i, $t := $r.Topics}}{{if lt $i 4}}<span class="topic">{{$t}}</span>{{end}}{{end}}
+            </span>
+          </span>
+        </label>
+      </li>
+      {{end}}
+    </ul>
+    {{end}}
+  </section>
+
+  <section aria-labelledby="details-title" class="details">
+    <h2 id="details-title">Add what GitHub can't show <span class="muted small">(optional)</span></h2>
+    <p class="muted">You can also add work experience, education and certifications in the editor.</p>
+    <div class="grid-2">
+      <label>Email<input type="email" name="email" maxlength="120" value="{{$u.Email}}" autocomplete="email"></label>
+      <label>Phone<input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
+      <label>Location<input type="text" name="location" maxlength="120" value="{{$u.Location}}"></label>
+      <label>LinkedIn URL<input type="url" name="linkedin" maxlength="300" placeholder="https://linkedin.com/in/…"></label>
+      <label>Website<input type="url" name="website" maxlength="300" value="{{$u.Blog}}" placeholder="https://"></label>
+      <label>Portfolio<input type="url" name="portfolio" maxlength="300" placeholder="https://"></label>
+    </div>
+    <label>Background and achievements
+      <textarea name="background" rows="4" maxlength="3000" placeholder="For example: 3 years as a backend developer at Acme; BSc Computer Science; led migration to Kubernetes. The AI uses this only as context and won't add anything you didn't write."></textarea>
+    </label>
+    <label>Target job description
+      <textarea name="job_description" rows="4" maxlength="4000" placeholder="Paste a job posting to tailor the resume. Qualifications you don't have won't be added."></textarea>
+    </label>
+  </section>
+
+  <div class="actions">
+    <a class="btn" href="/">Back</a>
+    <button type="submit" class="btn btn-primary" {{if not .Analysis.Repos}}disabled{{end}}>
+      {{if .AIEnabled}}Generate resume with AI{{else}}Build draft resume{{end}}
+    </button>
+  </div>
+</form>
+
+<div id="loading" class="loading-overlay" hidden>
+  <div class="loading-box" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <p id="loading-text">Working…</p>
+  </div>
+</div>
+{{end}}
+{{define "scripts"}}<script src="/static/app.js"></script>{{end}}

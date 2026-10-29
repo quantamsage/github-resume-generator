@@ -1,0 +1,45 @@
+{{define "title"}}Resume editor · GitHub to Resume{{end}}
+{{define "bodyclass"}}editor-page{{end}}
+{{define "content"}}
+<div id="editor-app" class="editor" data-resume="{{.ResumeJSON}}" data-username="{{.Username}}">
+  <div class="toolbar no-print" role="toolbar" aria-label="Resume actions">
+    <label>Template
+      <select id="template">
+        <option value="ats">ATS-friendly</option>
+        <option value="modern">Modern professional</option>
+        <option value="minimal">Minimalist</option>
+      </select>
+    </label>
+    <label>Paper
+      <select id="paper">
+        <option value="a4">A4</option>
+        <option value="letter">US Letter</option>
+      </select>
+    </label>
+    <button type="button" class="btn btn-primary" id="download-pdf">Download PDF</button>
+    <button type="button" class="btn" id="print">Print</button>
+    <button type="button" class="btn" id="export-json">Export JSON</button>
+    <label class="btn file-btn">Import JSON<input type="file" id="import-json" accept="application/json,.json"></label>
+    <button type="button" class="btn btn-danger" id="clear-data">Delete saved data</button>
+    <span id="status" class="status" role="status" aria-live="polite"></span>
+  </div>
+
+  <div id="empty-state" class="empty-state no-print" hidden>
+    <h1>No resume yet</h1>
+    <p>Start by <a href="/">entering a GitHub username</a>, or import a resume JSON file you exported earlier.</p>
+  </div>
+
+  <div class="editor-grid" id="editor-grid">
+    <form id="editor-form" class="editor-form no-print" autocomplete="off" aria-label="Resume fields"></form>
+    <section class="preview-pane" aria-label="Live preview">
+      <div class="paper-frame">
+        <div id="preview" class="resume tpl-ats"></div>
+      </div>
+    </section>
+  </div>
+</div>
+{{end}}
+{{define "scripts"}}
+<script src="/static/render.js"></script>
+<script src="/static/editor.js"></script>
+{{end}}
