@@ -1,0 +1,13 @@
+# Build output (the build/ folder is kept, binaries are not committed)
+build/*
+!build/.gitkeep
+
+# Local configuration
+.env
+*.local
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
